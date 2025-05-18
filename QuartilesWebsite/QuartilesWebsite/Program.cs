@@ -29,6 +29,6 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(QuartilesWebsite.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(QuartilesWebsite.Client.Pages._Imports).Assembly);
 
 app.Run();

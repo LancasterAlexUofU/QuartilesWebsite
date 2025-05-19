@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesWebsite", "Quartil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesWebsite.Client", "QuartilesWebsite\QuartilesWebsite.Client\QuartilesWebsite.Client.csproj", "{78EBC89D-51EA-45A2-8C3A-1BE5026509D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesCracker", "..\QuartilesCracker\QuartilesCracker\QuartilesCracker.csproj", "{53079FEB-6AA3-E324-1475-9333B93028EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chunk", "..\QuartilesCracker\Chunk\Chunk.csproj", "{6F758818-EA1B-AABA-6E20-C6BCE56BDCF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +24,14 @@ Global
 		{78EBC89D-51EA-45A2-8C3A-1BE5026509D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78EBC89D-51EA-45A2-8C3A-1BE5026509D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78EBC89D-51EA-45A2-8C3A-1BE5026509D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53079FEB-6AA3-E324-1475-9333B93028EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53079FEB-6AA3-E324-1475-9333B93028EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53079FEB-6AA3-E324-1475-9333B93028EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53079FEB-6AA3-E324-1475-9333B93028EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F758818-EA1B-AABA-6E20-C6BCE56BDCF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F758818-EA1B-AABA-6E20-C6BCE56BDCF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F758818-EA1B-AABA-6E20-C6BCE56BDCF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F758818-EA1B-AABA-6E20-C6BCE56BDCF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

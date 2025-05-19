@@ -1,44 +1,6 @@
 ﻿@page "/"
+
 <PageTitle>Quartiles Cracker</PageTitle>
-
-@code {
-    private int MAX_CHUNK_LENGTH = 5;
-    private int rows = 5;
-    private int columns = 4;
-
-    private List<List<string>> GridValues = new();
-
-    protected override void OnInitialized()
-    {
-        for(int row = 0; row < rows; row++)
-        {
-            var rowContents = new List<string>();
-
-            for(int col = 0; col < columns; col++)
-            {
-                rowContents.Add(string.Empty);
-            }
-
-            GridValues.Add(rowContents);
-        }
-    }
-
-    private async void SubmitGrid()
-    {
-        
-    }
-
-
-    private void OnInputChanged(ChangeEventArgs e, int row, int col)
-    {
-        var raw = e.Value?.ToString() ?? string.Empty;
-        var filtered = new string(raw.Where(char.IsLetter).ToArray());
-        if (filtered.Length > MAX_CHUNK_LENGTH)
-            filtered = filtered[..MAX_CHUNK_LENGTH];
-
-        GridValues[row][col] = filtered;
-    }
-}
 
 <table>
     @for (int row = 0; row < rows; row++)
@@ -48,13 +10,11 @@
             {
                 <td>
                     <input
-                           value="@GridValues[row][col]"
-                           maxlength="@MAX_CHUNK_LENGTH"
-                           pattern="[A-Za-z]{1,@MAX_CHUNK_LENGTH}"
-                           @oninput="e => OnInputChanged(e, row, col)"
-                           alt="Cell @row @col"
+                           @* @bind="GridValues[row][col]" *@
+                           @* maxlength="@MAX_CHUNK_LENGTH"                            *@
+                           @* oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" *@
+                           @* alt="Cell @row @col" *@
                            required />
-
                 </td>
             }
         </tr>

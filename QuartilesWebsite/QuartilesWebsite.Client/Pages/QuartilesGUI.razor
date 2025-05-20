@@ -4,16 +4,16 @@
 <PageTitle>Quartiles Cracker</PageTitle>
 
 <table>
-    @for (int row = 0; row < rows; row++)
+    @for (int row = 0; row < Rows; row++)
     {
         <tr>
-            @for (int col = 0; col < columns; col++)
+            @for (int col = 0; col < Columns; col++)
             {
                Chunk chunk = GetChunk(row, col);
                 <td>
                     <input
                            @bind="chunk.Letters"
-                           maxlength="@MAX_CHUNK_LENGTH"
+                           maxlength="@MaxChunkLength"
                            oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
                            alt="Cell @row @col"
                      />
@@ -23,8 +23,7 @@
     }
 </table>
 
-<button 
-    @onclick="SubmitGrid">Submit</button>
+<button @onclick="SubmitGrid">Submit</button>
 
 @if (Results != null && Results.Count > 0)
 {

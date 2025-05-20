@@ -1,4 +1,5 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
 <PageTitle>Quartiles Cracker</PageTitle>
 
@@ -8,17 +9,30 @@
         <tr>
             @for (int col = 0; col < columns; col++)
             {
+               Chunk chunk = GetChunk(row, col);
                 <td>
                     <input
-                           @* @bind="GridValues[row][col]" *@
-                           @* maxlength="@MAX_CHUNK_LENGTH"                            *@
-                           @* oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" *@
-                           @* alt="Cell @row @col" *@
-                           required />
+                           @bind="chunk.Letters"
+                           maxlength="@MAX_CHUNK_LENGTH"
+                           oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
+                           alt="Cell @row @col"
+                     />
                 </td>
             }
         </tr>
     }
 </table>
 
-<button @onclick="SubmitGrid">Submit</button>
+<button 
+    @onclick="SubmitGrid">Submit</button>
+
+@if (Results != null && Results.Count > 0)
+{
+    <h3>Results</h3>
+    <ul>
+        @foreach (var result in Results)
+        {
+            <li>@result</li>
+        }
+    </ul>
+}

@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\QuartilesCracker\Chunk\Chunk.csproj" />
     <ProjectReference Include="..\..\..\QuartilesCracker\QuartilesCracker\QuartilesCracker.csproj" />
   </ItemGroup>
 

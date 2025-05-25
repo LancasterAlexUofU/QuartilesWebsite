@@ -9,14 +9,14 @@
         <tr>
             @for (int col = 0; col < Columns; col++)
             {
-               Chunk chunk = GetChunk(row, col);
+                Chunk chunk = GetChunk(row, col);
                 <td>
                     <input
-                           @bind="chunk.Letters"
-                           maxlength="@MaxChunkLength"
-                           oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
-                           alt="Cell @row @col"
-                     />
+                    @bind="chunk.Letters"
+                    maxlength="@MaxChunkLength"
+                    oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
+                    alt="Cell @row @col"
+                    />
                 </td>
             }
         </tr>
@@ -25,13 +25,16 @@
 
 <button @onclick="SubmitGrid">Submit</button>
 
-@if (Results != null && Results.Count > 0)
+@if (Solutions != null && Solutions.Count > 0)
 {
-    <h3>Results</h3>
+    <h3>Answers</h3>
     <ul>
-        @foreach (var result in Results)
+        @foreach (var solMapping in SolutionChunkMapping)
         {
-            <li>@result</li>
+            string solution = solMapping.Key;
+            var chunks = string.Join(" · ", solMapping.Value);
+
+            <li>@solution&nbsp;&nbsp;&nbsp;@chunks</li>
         }
     </ul>
 }

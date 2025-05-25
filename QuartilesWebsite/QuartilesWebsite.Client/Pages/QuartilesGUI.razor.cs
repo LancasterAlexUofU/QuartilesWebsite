@@ -2,37 +2,24 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Quartiles;
 using Chunks;
+using Paths;
 
 namespace QuartilesWebsite.Client.Pages
 {
     public partial class QuartilesGUI : ComponentBase
     {
-        public int MaxChunkLength { get; set; }
-        public int Rows { get; set; }
-        public int Columns { get; set; }
+        public int MaxChunkLength { get; set; } = 5;
+        public int Rows { get; set; } = 5;
+        public int Columns { get; set; } = 4;
 
-        private QuartilesCracker solver = new();
-        protected List<Chunk> chunkList = new();
+        private QuartilesCracker solver;
+        protected List<Chunk> chunkList = [];
 
-        public List<string> Results { get; set; } = new();
-        public List<KeyValuePair<string, List<string>>> SolutionChunkMapping { get; set; } = new();
+        public HashSet<string> Solutions { get; set; } = [];
+        public Dictionary<string, List<string>> SolutionChunkMapping { get; set; } = [];
 
         [Inject]
         private IJSRuntime JS { get; set; } = default!;
-
-        public QuartilesGUI(int maxChunkLength = 5, int rows = 5, int columns = 4)
-        {
-            MaxChunkLength = maxChunkLength;
-            Rows = rows;
-            Columns = columns;
-        }
-
-        public QuartilesGUI() 
-        {
-            MaxChunkLength = 5;
-            Rows = 5;
-            Columns = 4;
-        }
 
         protected override void OnInitialized()
         {
@@ -44,6 +31,9 @@ namespace QuartilesWebsite.Client.Pages
                     chunkList.Add(cell);
                 }
             }
+
+            solver = new QuartilesCracker();
+            solver.CurrentDictionary = "quartiles_dictionary_updated";
         }
 
         protected Chunk GetChunk(int row, int column)
@@ -58,10 +48,13 @@ namespace QuartilesWebsite.Client.Pages
                 await JS.InvokeVoidAsync("alert", "Please fill in all available cells in the table.");
             }
 
-            DisplaySolutions();
+            else
+            {
+               DisplaySolutions();
+            }
         }
 
-        protected async Task DisplaySolutions()
+        protected void DisplaySolutions()
         {
             List<string> chunkLetters = new();
             foreach (Chunk cell in chunkList)
@@ -69,8 +62,8 @@ namespace QuartilesWebsite.Client.Pages
                 chunkLetters.Add(cell.Letters);
             }
 
-            var (results, solutionChunkMapping) = solver.QuartileSolver(chunkLetters);
-            this.Results = results;
+            var (solutions, solutionChunkMapping) = solver.QuartileSolverWithMapping(chunkLetters);
+            this.Solutions = solutions;
             this.SolutionChunkMapping = solutionChunkMapping;
         }
     }

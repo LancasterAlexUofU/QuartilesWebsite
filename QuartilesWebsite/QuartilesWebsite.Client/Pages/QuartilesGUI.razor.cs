@@ -62,9 +62,7 @@ namespace QuartilesWebsite.Client.Pages
                 chunkLetters.Add(cell.Letters);
             }
 
-            var (solutions, solutionChunkMapping) = solver.QuartileSolverWithMapping(chunkLetters);
-            this.Solutions = solutions;
-            this.SolutionChunkMapping = solutionChunkMapping;
+            (Solutions, SolutionChunkMapping) = solver.QuartileSolverWithMapping(chunkLetters);
         }
     }
 }

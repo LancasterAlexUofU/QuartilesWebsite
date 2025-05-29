@@ -1,0 +1,41 @@
+﻿.inter-font {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: x-large;
+}
+
+body {
+    background-color: lightblue;
+}
+
+h1 {
+    color: blue;
+    font-style: italic;
+    text-shadow: 2px 2px 2px gray;
+}
+
+td {
+    border-bottom: 5px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: white;
+}
+
+input {
+    border: none;
+    outline: none;
+    text-align: center;
+    width: 50px;
+    height: 30px;
+    background-color: white;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    border-spacing: 10px;
+    background-color: #f4f3fa;
+}
+

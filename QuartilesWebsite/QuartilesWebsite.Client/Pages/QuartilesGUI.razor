@@ -3,6 +3,8 @@
 
 <PageTitle>Quartiles Cracker</PageTitle>
 
+<h1>Quartiles Cracker</h1>
+
 <table>
     @for (int row = 0; row < Rows; row++)
     {
@@ -11,7 +13,7 @@
             {
                 Chunk chunk = GetChunk(row, col);
                 <td>
-                    <input
+                    <input class="inter-font" type="text" spellcheck="false"
                     @bind="chunk.Letters"
                     maxlength="@MaxChunkLength"
                     oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"

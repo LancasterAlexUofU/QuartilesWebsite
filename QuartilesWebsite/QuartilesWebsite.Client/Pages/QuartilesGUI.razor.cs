@@ -33,7 +33,6 @@ namespace QuartilesWebsite.Client.Pages
             }
 
             solver = new QuartilesCracker();
-            solver.CurrentDictionary = "quartiles_dictionary_updated";
         }
 
         protected Chunk GetChunk(int row, int column)

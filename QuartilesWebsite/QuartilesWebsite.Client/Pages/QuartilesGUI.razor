@@ -16,13 +16,13 @@
                         Chunk chunk = GetChunk(row, col);
 
                         <td class="grid-letters">
-                            <input class="inter-font grid-input"
-                                   type="text"
-                                   spellcheck="false"
-                                   @bind="chunk.Letters"
-                                   maxlength="@MaxChunkLength"
-                                   oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
-                                   alt="Cell @row @col" />
+                            <input class="inter-font-chunk grid-input"
+                            type="text"
+                            spellcheck="false"
+                            @bind="chunk.Letters"
+                            maxlength="@MaxChunkLength"
+                            oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
+                            alt="Cell @row @col" />
                         </td>
                     }
                 </tr>
@@ -36,13 +36,27 @@
 @if (Solutions != null && Solutions.Count > 0)
 {
     <h3>Answers</h3>
-    <ul>
+
+
+
+
+
+    <table class="solution-display quartiles-grid">
         @foreach (var solMapping in SolutionChunkMapping)
         {
             string solution = solMapping.Key;
-            var chunks = string.Join(" · ", solMapping.Value);
+            List<string> chunks = solMapping.Value;
+            <tr>
+                <td class="solution-word inter-font-chunk">@solution</td>
 
-            <li>@solution&nbsp;&nbsp;&nbsp;@chunks</li>
+                @foreach (var chunk in chunks)
+                {
+                    <td class="solution-chunk inter-font-chunk grid-letters">@chunk</td>
+                }
+            </tr>
         }
+    </table>
+    <ul>
+
     </ul>
 }

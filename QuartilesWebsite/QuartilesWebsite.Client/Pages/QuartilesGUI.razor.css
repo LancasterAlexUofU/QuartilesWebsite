@@ -1,4 +1,4 @@
-﻿.inter-font {
+﻿.inter-font-chunk {
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
     font-weight: 700;
@@ -19,7 +19,7 @@ h1 {
     background-color: white;
     width: 70px;
     height: 50px;
-    overflow: hidden
+    overflow: hidden;
 }
 
 .grid-input {
@@ -71,4 +71,11 @@ button:active {
     width: fit-content;
 }
 
+.solution-word {
+
+}
+
+.solution-chunk {
+    text-align: center;
+}
 

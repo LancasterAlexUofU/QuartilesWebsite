@@ -8,7 +8,7 @@ namespace QuartilesWebsite.Client.Pages
 {
     public partial class QuartilesGUI : ComponentBase
     {
-        public int MaxChunkLength { get; set; } = 5;
+        public int MaxChunkLength { get; set; } = 4;
         public int Rows { get; set; } = 5;
         public int Columns { get; set; } = 4;
 

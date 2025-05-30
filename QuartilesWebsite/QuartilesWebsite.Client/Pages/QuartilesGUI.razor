@@ -5,27 +5,33 @@
 
 <h1>Quartiles Cracker</h1>
 
-<table>
-    @for (int row = 0; row < Rows; row++)
-    {
-        <tr>
-            @for (int col = 0; col < Columns; col++)
+<div class="center-grid-container">
+    <div class="table-wrapper">
+        <table class="quartiles-grid">
+            @for (int row = 0; row < Rows; row++)
             {
-                Chunk chunk = GetChunk(row, col);
-                <td>
-                    <input class="inter-font" type="text" spellcheck="false"
-                    @bind="chunk.Letters"
-                    maxlength="@MaxChunkLength"
-                    oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
-                    alt="Cell @row @col"
-                    />
-                </td>
-            }
-        </tr>
-    }
-</table>
+                <tr>
+                    @for (int col = 0; col < Columns; col++)
+                    {
+                        Chunk chunk = GetChunk(row, col);
 
-<button @onclick="SubmitGrid">Submit</button>
+                        <td class="grid-letters">
+                            <input class="inter-font grid-input"
+                                   type="text"
+                                   spellcheck="false"
+                                   @bind="chunk.Letters"
+                                   maxlength="@MaxChunkLength"
+                                   oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"
+                                   alt="Cell @row @col" />
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+
+        <button class="grid-submit-button" type="button" @onclick="SubmitGrid">Find Solutions</button>
+    </div>
+</div>
 
 @if (Solutions != null && Solutions.Count > 0)
 {

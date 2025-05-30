@@ -35,28 +35,34 @@
 
 @if (Solutions != null && Solutions.Count > 0)
 {
-    <h3>Answers</h3>
+    <h1 class="solutions-title inter-font-chunk">@Solutions.Count Possible Solutions Found!</h1>
 
+    var SeparateChunkSizeSolutions = GetSeparateChunkSizeSolutions();
 
-
-
-
-    <table class="solution-display quartiles-grid">
-        @foreach (var solMapping in SolutionChunkMapping)
+    <div class="solutions-container-all">
+        @foreach (var solutionSize in SeparateChunkSizeSolutions)
         {
-            string solution = solMapping.Key;
-            List<string> chunks = solMapping.Value;
-            <tr>
-                <td class="solution-word inter-font-chunk">@solution</td>
+            int chunkSize = solutionSize.Key;
+            HashSet<string> solutions = solutionSize.Value;
 
-                @foreach (var chunk in chunks)
-                {
-                    <td class="solution-chunk inter-font-chunk grid-letters">@chunk</td>
-                }
-            </tr>
+            <div class="solutions-container-individual">
+                <h3 class="solutions-title-individual inter-font-chunk">Size @chunkSize Solutions</h3>
+                <table class="solution-table-display quartiles-grid">
+                    @foreach (var solution in solutions)
+                    {
+                        var chunks = SolutionChunkMapping[solution];
+
+                        <tr>
+                            <td class="solution-word inter-font-chunk">@solution</td>
+
+                            @foreach (var chunk in chunks)
+                            {
+                                <td class="solution-chunk inter-font-chunk grid-letters">@chunk</td>
+                            }
+                        </tr>
+                    }
+                </table>
+            </div>
         }
-    </table>
-    <ul>
-
-    </ul>
+    </div>
 }

@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chunk", "..\QuartilesCracke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paths", "..\QuartilesCracker\Paths\Paths.csproj", "{156AB772-6EA6-3743-12DF-AEBB0F624B2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryUpdater", "..\QuartilesCracker\DictionaryUpdater\DictionaryUpdater.csproj", "{59EED8C1-FC5A-9D7A-3EE9-64F8796C7B75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{156AB772-6EA6-3743-12DF-AEBB0F624B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{156AB772-6EA6-3743-12DF-AEBB0F624B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{156AB772-6EA6-3743-12DF-AEBB0F624B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59EED8C1-FC5A-9D7A-3EE9-64F8796C7B75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59EED8C1-FC5A-9D7A-3EE9-64F8796C7B75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59EED8C1-FC5A-9D7A-3EE9-64F8796C7B75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59EED8C1-FC5A-9D7A-3EE9-64F8796C7B75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

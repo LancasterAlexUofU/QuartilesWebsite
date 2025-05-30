@@ -6,11 +6,11 @@
     font-size: x-large;
 }
 
-h1 {
+/*h1 {
     color: blue;
     font-style: italic;
     text-shadow: 2px 2px 2px gray;
-}
+}*/
 
 .grid-letters {
     border-bottom: 5px solid #ccc;
@@ -79,3 +79,35 @@ button:active {
     text-align: center;
 }
 
+/* Align each individual solution container horizontally */
+.solutions-container-all {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Align solution contents vertically*/
+.solutions-container-individual {
+
+}
+
+.solutions-title-individual {
+    text-align: center;
+
+}
+
+.solution-table-display {
+}
+
+.solution-word {
+
+}
+
+.solution-chunk {
+
+}
+
+.solutions-title {
+    text-align: center;
+}

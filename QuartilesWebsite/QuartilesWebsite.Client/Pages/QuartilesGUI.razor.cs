@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using Quartiles;
 using Chunks;
 using Paths;
+using Updater;
 
 namespace QuartilesWebsite.Client.Pages
 {
@@ -13,10 +14,15 @@ namespace QuartilesWebsite.Client.Pages
         public int Columns { get; set; } = 4;
 
         private QuartilesCracker solver;
+        //private DictionaryUpdater updater;
+        //private QuartilePaths paths;
         protected List<Chunk> chunkList = [];
 
         public HashSet<string> Solutions { get; set; } = [];
         public Dictionary<string, List<string>> SolutionChunkMapping { get; set; } = [];
+
+        public HashSet<string> KnownValidWords { get; private set; }
+
 
         [Inject]
         private IJSRuntime JS { get; set; } = default!;
@@ -33,6 +39,11 @@ namespace QuartilesWebsite.Client.Pages
             }
 
             solver = new QuartilesCracker();
+            //updater = new DictionaryUpdater();
+            //paths = new QuartilePaths(filesToBeModified: false);
+
+            //string validWordsPath = Path.Combine(paths.DictionaryUpdaterListsFolder, "kmown_valid_words.txt");
+            //KnownValidWords = new HashSet<string>(File.ReadAllLines(validWordsPath));
         }
 
         protected Chunk GetChunk(int row, int column)
@@ -62,6 +73,21 @@ namespace QuartilesWebsite.Client.Pages
             }
 
             (Solutions, SolutionChunkMapping) = solver.QuartileSolverWithMapping(chunkLetters);
+        }
+
+        protected Dictionary<int, HashSet<string>> GetSeparateChunkSizeSolutions()
+        {
+            Dictionary<int, HashSet<string>> ChunkSizeSolutions = [];
+
+            foreach (var solMapping in SolutionChunkMapping)
+            {
+                string solution = solMapping.Key;
+                int chunkSize = solMapping.Value.Count;
+                ChunkSizeSolutions.TryAdd(chunkSize, new HashSet<string>());
+                ChunkSizeSolutions[chunkSize].Add(solution);
+            }
+
+            return ChunkSizeSolutions;
         }
     }
 }

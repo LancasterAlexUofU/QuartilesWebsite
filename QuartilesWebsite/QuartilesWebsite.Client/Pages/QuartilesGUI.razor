@@ -38,22 +38,25 @@
     <h1 class="solutions-title inter-font-chunk">@Solutions.Count Possible Solutions Found!</h1>
 
     var SeparateChunkSizeSolutions = GetSeparateChunkSizeSolutions();
+    var bestSolutionOrder = GetBestSolutionOrdering();
 
     <div class="solutions-container-all">
-        @foreach (var solutionSize in SeparateChunkSizeSolutions)
+        @foreach (var solutionSize in bestSolutionOrder)
         {
             int chunkSize = solutionSize.Key;
-            HashSet<string> solutions = solutionSize.Value;
+
+            HashSet<(int validRanking, string solution)> solutionsWithValidityRanking = solutionSize.Value;
 
             <div class="solutions-container-individual">
                 <h3 class="solutions-title-individual inter-font-chunk">Size @chunkSize Solutions</h3>
                 <table class="solution-table-display quartiles-grid">
-                    @foreach (var solution in solutions)
+                    @foreach (var rankedSolution in solutionsWithValidityRanking)
                     {
+                        (int solutionValidityRanking, string solution) = rankedSolution;
                         var chunks = SolutionChunkMapping[solution];
 
                         <tr>
-                            <td class="solution-word inter-font-chunk">@solution</td>
+                            <td class="solution-word inter-font-chunk @RankingToColor[solutionValidityRanking]">@solution</td>
 
                             @foreach (var chunk in chunks)
                             {

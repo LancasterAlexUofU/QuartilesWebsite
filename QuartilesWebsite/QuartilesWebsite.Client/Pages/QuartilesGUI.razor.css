@@ -12,6 +12,18 @@
     text-shadow: 2px 2px 2px gray;
 }*/
 
+.KNOWN_VALID_SOLUTION {
+    color: #fad25a;
+}
+
+.LIKELY_VALID_SOLUTION {
+    color: #32CD32;
+}
+
+.WEAK_SOLUTION {
+    color: orange;
+}
+
 .grid-letters {
     border-bottom: 5px solid #ccc;
     border-radius: 10px;

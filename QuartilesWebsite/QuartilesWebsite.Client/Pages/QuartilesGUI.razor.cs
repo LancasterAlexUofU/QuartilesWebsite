@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 using Quartiles;
 using Chunks;
 using Paths;
-using Updater;
+
 
 namespace QuartilesWebsite.Client.Pages
 {
@@ -14,14 +14,25 @@ namespace QuartilesWebsite.Client.Pages
         public int Columns { get; set; } = 4;
 
         private QuartilesCracker solver;
-        //private DictionaryUpdater updater;
-        //private QuartilePaths paths;
+        private QuartilePaths paths;
         protected List<Chunk> chunkList = [];
 
         public HashSet<string> Solutions { get; set; } = [];
-        public Dictionary<string, List<string>> SolutionChunkMapping { get; set; } = [];
+        public Dictionary<string, List<string>> SolutionChunkMapping = [];
 
-        public HashSet<string> KnownValidWords { get; private set; }
+        public HashSet<string> KnownValidWords;
+        public HashSet<string> SCOWLDict;
+
+        public Dictionary<int, string> RankingToColor = new()
+        {
+            { KNOWN_VALID_SOLUTION, "KNOWN_VALID_SOLUTION" },
+            { LIKELY_VALID_SOLUTION, "LIKELY_VALID_SOLUTION" },
+            { WEAK_SOLUTION, "WEAK_SOLUTION" },
+        };
+
+        public const int KNOWN_VALID_SOLUTION = 0;
+        public const int LIKELY_VALID_SOLUTION = 1;
+        public const int WEAK_SOLUTION = 2;
 
 
         [Inject]
@@ -39,11 +50,12 @@ namespace QuartilesWebsite.Client.Pages
             }
 
             solver = new QuartilesCracker();
-            //updater = new DictionaryUpdater();
-            //paths = new QuartilePaths(filesToBeModified: false);
+            paths = new QuartilePaths(filesToBeModified: false);
 
-            //string validWordsPath = Path.Combine(paths.DictionaryUpdaterListsFolder, "kmown_valid_words.txt");
-            //KnownValidWords = new HashSet<string>(File.ReadAllLines(validWordsPath));
+            string validWordsPath = Path.Combine(paths.QuartilesCrackerOtherDictFolder, "known_valid_words.txt");
+            string scowlWordsPath = Path.Combine(paths.QuartilesCrackerOtherDictFolder, "2of12.txt");
+            KnownValidWords = new HashSet<string>(File.ReadAllLines(validWordsPath));
+            SCOWLDict = new HashSet<string>(File.ReadLines(scowlWordsPath));
         }
 
         protected Chunk GetChunk(int row, int column)
@@ -77,17 +89,55 @@ namespace QuartilesWebsite.Client.Pages
 
         protected Dictionary<int, HashSet<string>> GetSeparateChunkSizeSolutions()
         {
-            Dictionary<int, HashSet<string>> ChunkSizeSolutions = [];
+            Dictionary<int, HashSet<string>> chunkSizeSolutions = [];
 
             foreach (var solMapping in SolutionChunkMapping)
             {
                 string solution = solMapping.Key;
                 int chunkSize = solMapping.Value.Count;
-                ChunkSizeSolutions.TryAdd(chunkSize, new HashSet<string>());
-                ChunkSizeSolutions[chunkSize].Add(solution);
+                chunkSizeSolutions.TryAdd(chunkSize, new HashSet<string>());
+                chunkSizeSolutions[chunkSize].Add(solution);
             }
 
-            return ChunkSizeSolutions;
+            return chunkSizeSolutions;
+        }
+
+        protected Dictionary<int, HashSet<(int ranking, string solution)>> GetBestSolutionOrdering()
+        {
+            Dictionary<int, HashSet<(int ranking, string solution)>> bestSolutionOrdering = [];
+
+            foreach (var solMapping in SolutionChunkMapping)
+            {
+                int chunkSize = solMapping.Value.Count;
+                string solution = solMapping.Key;
+
+                bestSolutionOrdering.TryAdd(chunkSize, new HashSet<(int ranking, string solution)>());
+
+                if (KnownValidWords.Contains(solution))
+                {
+                    bestSolutionOrdering[chunkSize].Add((KNOWN_VALID_SOLUTION, solution));
+                }
+
+                else if (SCOWLDict.Contains(solution))
+                {
+                    bestSolutionOrdering[chunkSize].Add((LIKELY_VALID_SOLUTION, solution));
+                }
+
+                else
+                {
+                    bestSolutionOrdering[chunkSize].Add((WEAK_SOLUTION, solution));
+                }
+            }
+
+            foreach (var bestMapping in bestSolutionOrdering)
+            {
+                int chunkSize = bestMapping.Key;
+
+                HashSet<(int ranking, string solution)> orderedSet = bestSolutionOrdering[chunkSize].OrderBy(x => x.ranking).ToHashSet();
+                bestSolutionOrdering[chunkSize] = orderedSet;
+            }
+
+            return bestSolutionOrdering;
         }
     }
 }

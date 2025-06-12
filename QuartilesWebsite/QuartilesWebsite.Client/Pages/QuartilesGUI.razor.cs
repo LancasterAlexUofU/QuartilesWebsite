@@ -38,7 +38,7 @@ namespace QuartilesWebsite.Client.Pages
         /// </summary>
         protected List<Chunk> chunkList = [];
 
-        private List<string>? ocrChunks;
+        private List<string> ocrChunks = [];
 
         /// <summary>
         /// Set of solutions found by QuartilesSolver
@@ -198,7 +198,11 @@ namespace QuartilesWebsite.Client.Pages
             return bestSolutionOrdering;
         }
 
-
+        /// <summary>
+        /// Handles the image upload event, checks the file type, and sends the file to the API for OCR processing.
+        /// </summary>
+        /// <param name="e">The file event contain file information</param>
+        /// <returns></returns>
         protected async Task HandleImageUpload(InputFileChangeEventArgs e)
         {
             // File type check
@@ -220,7 +224,16 @@ namespace QuartilesWebsite.Client.Pages
 
             content.Add(fileContent, "image", file.Name);
 
-            // API Call for OCR Scanning
+            await GetApiDataOcr(content);
+        }
+
+        /// <summary>
+        /// Sends the MultipartFormDataContent to the API for OCR processing and retrieves the recognized text chunks.
+        /// </summary>
+        /// <param name="content">Image to be processed</param>
+        /// <returns></returns>
+        private async Task GetApiDataOcr(MultipartFormDataContent content)
+        {
             try
             {
                 var response = await Http.PostAsync("https://localhost:7293/api/upload/upload-image", content);
@@ -241,13 +254,17 @@ namespace QuartilesWebsite.Client.Pages
                     Console.WriteLine("Upload failed.");
                 }
             }
+
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
-
         }
 
+        /// <summary>
+        /// Fills the grid with letters from the OCR result.
+        /// </summary>
+        /// <param name="ocrChunks">List of chunks scanned in from OCR</param>
         private void FillGridFromOCR(List<string> ocrChunks)
         {
             if (ocrChunks == null || ocrChunks.Count != Rows * Columns)

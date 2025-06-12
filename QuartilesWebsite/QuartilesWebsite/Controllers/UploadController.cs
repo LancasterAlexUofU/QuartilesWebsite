@@ -36,6 +36,11 @@ namespace QuartilesWebsite.Controllers
 
             var uploadsDir = Path.Combine(_env.WebRootPath, "uploads");
 
+            if (!Directory.Exists(uploadsDir))
+            {
+                Directory.CreateDirectory(uploadsDir);
+            }
+
             var fileName = Path.GetRandomFileName() + extension;
             var filePath = Path.Combine(uploadsDir, fileName);
 

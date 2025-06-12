@@ -81,7 +81,7 @@ namespace QuartilesWebsite.Client.Pages
         private IJSRuntime JS { get; set; } = default!;
 
         [Inject]
-        private HttpClient Http { get; set; } = default!;
+        private HttpClient Http { get; set; }
 
         /// <summary>
         /// Initialized cells to empty and reads in dictionaries to sets
@@ -209,21 +209,33 @@ namespace QuartilesWebsite.Client.Pages
                 return;
             }
 
-            var content = new MultipartFormDataContent(); // Creates a form-data request
-            Stream stream = file.OpenReadStream(10_000_000); // limit to 10 MB
-            content.Add(new StreamContent(stream), "image", file.Name);
+            using var content = new MultipartFormDataContent();
+            var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); // adjust limit as needed
+            var fileContent = new StreamContent(stream);
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
 
-            var response = await Http.PostAsync("api/upload/upload-image", content);
+            content.Add(fileContent, "image", file.Name);
 
-            if (response.IsSuccessStatusCode)
+            try
             {
-                ocrChunks = await response.Content.ReadFromJsonAsync<List<string>>();
+                var response = await Http.PostAsync("https://localhost:7293/api/upload/upload-image", content);
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    ocrChunks = await response.Content.ReadFromJsonAsync<List<string>>();
+                }
+
+                else
+                {
+                    Console.WriteLine("Upload failed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
 
-            else
-            {
-                Console.WriteLine("Upload failed.");
-            }
         }
     }
 }

@@ -25,27 +25,27 @@ else
     app.UseHsts();
 }
 
-app.UseRouting();
-
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(QuartilesWebsite.Client.Pages._Imports).Assembly);
+app.UseRouting();
+//app.UseCors("AllowBlazorOrigin");
 
-
-
-
-app.MapControllers(); // Enables Routing to /api/upload/upload-image
 
 app.Use(async (context, next) =>
 {
     Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
     await next();
 });
+
+
+app.UseAntiforgery();
+
+app.MapControllers(); // Enables Routing to /api/upload/upload-image
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode()
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(QuartilesWebsite.Client.Pages._Imports).Assembly);
 
 app.Run();

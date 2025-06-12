@@ -25,6 +25,8 @@ else
     app.UseHsts();
 }
 
+app.UseRouting();
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -35,6 +37,15 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(QuartilesWebsite.Client.Pages._Imports).Assembly);
 
+
+
+
 app.MapControllers(); // Enables Routing to /api/upload/upload-image
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
+    await next();
+});
 
 app.Run();

@@ -18,6 +18,9 @@ namespace QuartilesWebsite.Controllers
         [HttpPost("upload-image")]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
+            Console.WriteLine("Received upload");
+
+
             if (image == null || image.Length == 0)
             {
                 return BadRequest("No image uploaded.");

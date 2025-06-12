@@ -3,17 +3,13 @@
     font-optical-sizing: auto;
     font-weight: 700;
     font-style: normal;
-    font-size: x-large;
+    font-size: medium;
 }
 
-/*h1 {
-    color: blue;
-    font-style: italic;
-    text-shadow: 2px 2px 2px gray;
-}*/
+/* || SOLUTION TEXT COLOR */
 
 .KNOWN_VALID_SOLUTION {
-    color: #fad25a;
+    color: #f7cb48;
 }
 
 .LIKELY_VALID_SOLUTION {
@@ -24,15 +20,18 @@
     color: orange;
 }
 
+/* || QUARTILES INPUT TABLE*/
+
 .grid-letters {
     border-bottom: 5px solid #ccc;
     border-radius: 10px;
     padding: 0px;
     background-color: white;
-    width: 70px;
+    width: 80px;
     height: 50px;
     overflow: hidden;
 }
+/* 70 w */
 
 .grid-input {
     border: none;
@@ -51,6 +50,8 @@
     background-color: #f4f3fa;
 }
 
+/* || SUBMITION BUTTON */
+
 .grid-submit-button {
     background-color: #0060e5;
     color: white;
@@ -66,6 +67,8 @@
 button:active {
     background-color: #004bb3;
 }
+
+
 
 .center-grid-container {
     display: flex;

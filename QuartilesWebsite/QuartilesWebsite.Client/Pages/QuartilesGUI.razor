@@ -5,6 +5,7 @@
 
 <h1>Quartiles Cracker</h1>
 
+@* Quartiles Input Grid *@
 <div class="center-grid-container">
     <div class="table-wrapper">
         <table class="quartiles-grid">
@@ -15,6 +16,10 @@
                     {
                         Chunk chunk = GetChunk(row, col);
 
+                        @* 
+                          The oninput attribute ensures that only alphabetic characters are allowed.
+                          It replaces any non-letter characters as the user types.
+                        *@
                         <td class="grid-letters">
                             <input class="inter-font-chunk grid-input"
                             type="text"
@@ -30,27 +35,31 @@
         </table>
 
         <button class="grid-submit-button" type="button" @onclick="SubmitGrid">Find Solutions</button>
+
+        <InputFile OnChange="HandleImageUpload" accept=".png,.jpeg,.jpg,.tiff,.bmp" />
+
     </div>
 </div>
 
+@* Only display solutions if solutions is non-empty *@
 @if (Solutions != null && Solutions.Count > 0)
 {
     <h1 class="solutions-title inter-font-chunk">@Solutions.Count Possible Solutions Found!</h1>
 
-    var SeparateChunkSizeSolutions = GetSeparateChunkSizeSolutions();
     var bestSolutionOrder = GetBestSolutionOrdering();
 
     <div class="solutions-container-all">
-        @foreach (var solutionSize in bestSolutionOrder)
+
+        @foreach (var solutionSize in bestSolutionOrder) @* Each KVP with solution chunk sizes of 1, 2, 3, 4, ... *@
         {
             int chunkSize = solutionSize.Key;
-
             HashSet<(int validRanking, string solution)> solutionsWithValidityRanking = solutionSize.Value;
 
             <div class="solutions-container-individual">
                 <h3 class="solutions-title-individual inter-font-chunk">Size @chunkSize Solutions</h3>
                 <table class="solution-table-display quartiles-grid">
-                    @foreach (var rankedSolution in solutionsWithValidityRanking)
+
+                    @foreach (var rankedSolution in solutionsWithValidityRanking) @* Each solution of a certain chunk size *@
                     {
                         (int solutionValidityRanking, string solution) = rankedSolution;
                         var chunks = SolutionChunkMapping[solution];
@@ -58,7 +67,7 @@
                         <tr>
                             <td class="solution-word inter-font-chunk @RankingToColor[solutionValidityRanking]">@solution</td>
 
-                            @foreach (var chunk in chunks)
+                            @foreach (var chunk in chunks) @* Each chunk mapping for a certain solution *@
                             {
                                 <td class="solution-chunk inter-font-chunk grid-letters">@chunk</td>
                             }

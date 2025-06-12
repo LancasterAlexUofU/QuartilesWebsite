@@ -7,6 +7,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddHttpClient();
+builder.Services.AddControllers();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,5 +34,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(QuartilesWebsite.Client.Pages._Imports).Assembly);
+
+app.MapControllers(); // Enables Routing to /api/upload/upload-image
 
 app.Run();

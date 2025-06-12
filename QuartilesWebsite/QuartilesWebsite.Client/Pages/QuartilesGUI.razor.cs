@@ -3,26 +3,67 @@ using Microsoft.JSInterop;
 using Quartiles;
 using Chunks;
 using Paths;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Net.Http.Json;
+
 
 
 namespace QuartilesWebsite.Client.Pages
 {
     public partial class QuartilesGUI : ComponentBase
     {
-        public int MaxChunkLength { get; set; } = 4;
-        public int Rows { get; set; } = 5;
-        public int Columns { get; set; } = 4;
 
         private QuartilesCracker solver;
         private QuartilePaths paths;
+
+        /// <summary>
+        /// Maximum number of characters for a chunk
+        /// </summary>
+        public int MaxChunkLength { get; set; } = 4;
+
+        /// <summary>
+        /// Number of rows in a quartiles grid
+        /// </summary>
+        public int Rows { get; set; } = 5;
+
+        /// <summary>
+        /// Number of columns in a quartiles grid
+        /// </summary>
+        public int Columns { get; set; } = 4;
+
+
+
+        /// <summary>
+        /// List containing chunks entered by user. Chunk letters initialized to empty in OnInitialized
+        /// </summary>
         protected List<Chunk> chunkList = [];
 
+        private List<string>? ocrChunks;
+
+        /// <summary>
+        /// Set of solutions found by QuartilesSolver
+        /// </summary>
         public HashSet<string> Solutions { get; set; } = [];
+
+        /// <summary>
+        /// Dictionary containing solutions and their associated chunks
+        /// </summary>
         public Dictionary<string, List<string>> SolutionChunkMapping = [];
 
-        public HashSet<string> KnownValidWords;
+        /// <summary>
+        /// Set containing words found in previous quartiles solutions
+        /// </summary>
+        private HashSet<string> KnownValidWords;
+
+        /// <summary>
+        /// Set containing words from SCOWL (Spell Checker Oriented Word Lists), a reliable source to tell if a word is valid
+        /// </summary>
         public HashSet<string> SCOWLDict;
 
+
+        /// <summary>
+        /// Dictionary mapping ranking values to their "color" class value
+        /// </summary>
         public Dictionary<int, string> RankingToColor = new()
         {
             { KNOWN_VALID_SOLUTION, "KNOWN_VALID_SOLUTION" },
@@ -30,6 +71,7 @@ namespace QuartilesWebsite.Client.Pages
             { WEAK_SOLUTION, "WEAK_SOLUTION" },
         };
 
+        // Constants representing solution confidence levels
         public const int KNOWN_VALID_SOLUTION = 0;
         public const int LIKELY_VALID_SOLUTION = 1;
         public const int WEAK_SOLUTION = 2;
@@ -38,6 +80,12 @@ namespace QuartilesWebsite.Client.Pages
         [Inject]
         private IJSRuntime JS { get; set; } = default!;
 
+        [Inject]
+        private HttpClient Http { get; set; } = default!;
+
+        /// <summary>
+        /// Initialized cells to empty and reads in dictionaries to sets
+        /// </summary>
         protected override void OnInitialized()
         {
             for (int row = 0; row < Rows; row++)
@@ -58,11 +106,21 @@ namespace QuartilesWebsite.Client.Pages
             SCOWLDict = new HashSet<string>(File.ReadLines(scowlWordsPath));
         }
 
+        /// <summary>
+        /// Given a row and column, returns a Chunk with the same row and column
+        /// </summary>
+        /// <param name="row">Row of the chunk, 0 indexed</param>
+        /// <param name="column">Column of the chunk, 0 indexed</param>
+        /// <returns>A Chunk object with the same row and column</returns>
         protected Chunk GetChunk(int row, int column)
         {
             return chunkList.FirstOrDefault(c => c.Row == row && c.Column == column);
         }
 
+        /// <summary>
+        /// Checks if any tiles are missing before submitting
+        /// </summary>
+        /// <returns></returns>
         protected async Task SubmitGrid()
         {
             if (chunkList.Any(c => string.IsNullOrWhiteSpace(c.Letters)))
@@ -72,11 +130,14 @@ namespace QuartilesWebsite.Client.Pages
 
             else
             {
-               DisplaySolutions();
+               FindSolutions();
             }
         }
 
-        protected void DisplaySolutions()
+        /// <summary>
+        /// Finds the solutions and stores them in Solutions and SolutionChunkMapping
+        /// </summary>
+        protected void FindSolutions()
         {
             List<string> chunkLetters = new();
             foreach (Chunk cell in chunkList)
@@ -87,25 +148,19 @@ namespace QuartilesWebsite.Client.Pages
             (Solutions, SolutionChunkMapping) = solver.QuartileSolverWithMapping(chunkLetters);
         }
 
-        protected Dictionary<int, HashSet<string>> GetSeparateChunkSizeSolutions()
-        {
-            Dictionary<int, HashSet<string>> chunkSizeSolutions = [];
-
-            foreach (var solMapping in SolutionChunkMapping)
-            {
-                string solution = solMapping.Key;
-                int chunkSize = solMapping.Value.Count;
-                chunkSizeSolutions.TryAdd(chunkSize, new HashSet<string>());
-                chunkSizeSolutions[chunkSize].Add(solution);
-            }
-
-            return chunkSizeSolutions;
-        }
-
+        /// <summary>
+        /// After a SolutionChunkMapping has been found, this method assigns a rank for each solution based on the likeliness of it being a valid solution.
+        /// 
+        /// <para>
+        /// This method sorts each chunk solution size by rank, with the highest probability solutions appearing first
+        /// </para>
+        /// </summary>
+        /// <returns>A Dictionary, with keys being the amount of chunks that make up a solution, and values being a tuple of solutions with their rank, in order</returns>
         protected Dictionary<int, HashSet<(int ranking, string solution)>> GetBestSolutionOrdering()
         {
             Dictionary<int, HashSet<(int ranking, string solution)>> bestSolutionOrdering = [];
 
+            // Goes through each solution and checks if it is in more known dictionaries
             foreach (var solMapping in SolutionChunkMapping)
             {
                 int chunkSize = solMapping.Value.Count;
@@ -129,6 +184,7 @@ namespace QuartilesWebsite.Client.Pages
                 }
             }
 
+            // Reorders set based on rank for each chunk solution size
             foreach (var bestMapping in bestSolutionOrdering)
             {
                 int chunkSize = bestMapping.Key;
@@ -138,6 +194,36 @@ namespace QuartilesWebsite.Client.Pages
             }
 
             return bestSolutionOrdering;
+        }
+
+
+        protected async Task HandleImageUpload(InputFileChangeEventArgs e)
+        {
+            var file = e.File;
+            var allowedTypes = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif" };
+
+            string extension = Path.GetExtension(file.Name).ToLowerInvariant();
+            if (!allowedTypes.Contains(extension))
+            {
+                Console.WriteLine("Unsupported file type.");
+                return;
+            }
+
+            var content = new MultipartFormDataContent(); // Creates a form-data request
+            Stream stream = file.OpenReadStream(10_000_000); // limit to 10 MB
+            content.Add(new StreamContent(stream), "image", file.Name);
+
+            var response = await Http.PostAsync("api/upload/upload-image", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                ocrChunks = await response.Content.ReadFromJsonAsync<List<string>>();
+            }
+
+            else
+            {
+                Console.WriteLine("Upload failed.");
+            }
         }
     }
 }

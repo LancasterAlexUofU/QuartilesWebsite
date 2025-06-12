@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using QuartilesToText;
 
 namespace QuartilesWebsite.Controllers
@@ -18,40 +17,41 @@ namespace QuartilesWebsite.Controllers
         [HttpPost("upload-image")]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
-            Console.WriteLine("Received upload");
-
-
             if (image == null || image.Length == 0)
             {
                 return BadRequest("No image uploaded.");
             }
 
             // Server side file extension check
-            var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif" };
-            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+            string[] allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif" };
+            string extension = Path.GetExtension(image.FileName).ToLowerInvariant();
             if (!allowedExtensions.Contains(extension))
             {
                 return BadRequest("Unsupported file type.");
             }
 
-            var uploadsDir = Path.Combine(_env.WebRootPath, "uploads");
-
+            // Upload folder
+            string uploadsDir = Path.Combine(_env.WebRootPath, "uploads");
             if (!Directory.Exists(uploadsDir))
             {
                 Directory.CreateDirectory(uploadsDir);
             }
 
-            var fileName = Path.GetRandomFileName() + extension;
-            var filePath = Path.Combine(uploadsDir, fileName);
+            // File Creation
+            string fileName = Path.GetRandomFileName() + extension;
+            string filePath = Path.Combine(uploadsDir, fileName);
 
             using (Stream stream = System.IO.File.Create(filePath))
             {
                 await image.CopyToAsync(stream);
             }
 
+            // Character extraction
             using var extractor = new QuartilesOCR(image.FileName);
             var chunks = extractor.ExtractChunksAuto();
 
+            // Delete image after OCR scanning and return list of chunks
+            System.IO.File.Delete(filePath);
             return Ok(chunks);
         }
     }

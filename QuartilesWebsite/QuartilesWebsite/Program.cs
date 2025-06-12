@@ -10,7 +10,6 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,15 +28,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-//app.UseCors("AllowBlazorOrigin");
-
 
 app.Use(async (context, next) =>
 {
     Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
     await next();
 });
-
 
 app.UseAntiforgery();
 

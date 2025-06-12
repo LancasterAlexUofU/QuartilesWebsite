@@ -76,6 +76,8 @@ namespace QuartilesWebsite.Client.Pages
         public const int LIKELY_VALID_SOLUTION = 1;
         public const int WEAK_SOLUTION = 2;
 
+        private const int MAX_FILESIZE = 5000 * 1024; // 5 MB
+
 
         [Inject]
         private IJSRuntime JS { get; set; } = default!;
@@ -199,6 +201,7 @@ namespace QuartilesWebsite.Client.Pages
 
         protected async Task HandleImageUpload(InputFileChangeEventArgs e)
         {
+            // File type check
             var file = e.File;
             var allowedTypes = new[] { ".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif" };
 
@@ -209,21 +212,28 @@ namespace QuartilesWebsite.Client.Pages
                 return;
             }
 
+            // File stream
             using var content = new MultipartFormDataContent();
-            var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); // adjust limit as needed
+            Stream stream = file.OpenReadStream(MAX_FILESIZE);
             var fileContent = new StreamContent(stream);
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
 
             content.Add(fileContent, "image", file.Name);
 
+            // API Call for OCR Scanning
             try
             {
                 var response = await Http.PostAsync("https://localhost:7293/api/upload/upload-image", content);
 
-
                 if (response.IsSuccessStatusCode)
                 {
                     ocrChunks = await response.Content.ReadFromJsonAsync<List<string>>();
+
+                    if (ocrChunks != null)
+                    {
+                        FillGridFromOCR(ocrChunks);
+                        StateHasChanged(); // force UI to refresh after setting the letters
+                    }
                 }
 
                 else
@@ -236,6 +246,20 @@ namespace QuartilesWebsite.Client.Pages
                 Console.WriteLine(ex.ToString());
             }
 
+        }
+
+        private void FillGridFromOCR(List<string> ocrChunks)
+        {
+            if (ocrChunks == null || ocrChunks.Count != Rows * Columns)
+            {
+                Console.WriteLine("OCR result is null or does not match expected grid size.");
+                return;
+            }
+
+            for (int i = 0; i < ocrChunks.Count; i++)
+            {
+                chunkList[i].Letters = ocrChunks[i];
+            }
         }
     }
 }

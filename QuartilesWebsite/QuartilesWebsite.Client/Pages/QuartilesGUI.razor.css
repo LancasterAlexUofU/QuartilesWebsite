@@ -52,7 +52,7 @@
 
 /* || SUBMITION BUTTON */
 
-.grid-submit-button {
+.button-style {
     background-color: #0060e5;
     color: white;
     width: 100%;
@@ -62,13 +62,26 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    text-align: center;
+    box-sizing: border-box;
+    text-decoration: none;
 }
 
-button:active {
+.button-style:active {
     background-color: #004bb3;
 }
 
 
+.grid-submit-button {
+}
+
+.file-upload-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .center-grid-container {
     display: flex;

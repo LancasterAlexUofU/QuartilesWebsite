@@ -34,9 +34,15 @@
             }
         </table>
 
-        <button class="grid-submit-button" type="button" @onclick="SubmitGrid">Find Solutions</button>
+        <button class="button-style grid-submit-button" type="button" @onclick="SubmitGrid">Find Solutions</button>
 
-        <InputFile OnChange="HandleImageUpload" accept=".png,.jpeg,.jpg,.tiff,.bmp" />
+        <label class="button-style file-upload-button" for="fileupload">
+            Upload Quartile Image
+            <InputFile OnChange="HandleImageUpload" accept=".png,.jpeg,.jpg,.tiff,.bmp" id="fileupload" hidden/>
+        </label>
+
+
+        
 
     </div>
 </div>
